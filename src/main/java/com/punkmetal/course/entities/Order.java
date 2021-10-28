@@ -1,22 +1,40 @@
 package com.punkmetal.course.entities;
 
-import java.util.Date;
+import java.io.Serializable;
+import java.time.Instant;
 import java.util.Objects;
 
-public class Order {
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+@Entity
+@Table(name = "tb_order")
+public class Order implements Serializable {
+	private static final long serialVersionUID = 1L;
 	
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	private Date moment;
-	private OrderStatus orderStatus;
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'", timezone = "GMT")
+	private Instant moment;
+	//private OrderStatus orderStatus;
 	
-	private User client;
+	@ManyToOne
+	@JoinColumn(name = "client_id")
+	private User client; // lazy loading carrega o cliente automatico
 	
 	public Order() {}
 
-	public Order(Long id, Date moment, OrderStatus orderStatus, User client) {
+	public Order(Long id, Instant moment, User client) {
 		this.id = id;
 		this.moment = moment;
-		this.orderStatus = orderStatus;
 		this.client = client;
 	}
 
@@ -28,22 +46,14 @@ public class Order {
 		this.id = id;
 	}
 
-	public Date getMoment() {
+	public Instant getMoment() {
 		return moment;
 	}
 
-	public void setMoment(Date moment) {
+	public void setMoment(Instant moment) {
 		this.moment = moment;
 	}
 
-	public OrderStatus getOrderStatus() {
-		return orderStatus;
-	}
-
-	public void setOrderStatus(OrderStatus orderStatus) {
-		this.orderStatus = orderStatus;
-	}
-	
 	public User getClient() {
 		return client;
 	}

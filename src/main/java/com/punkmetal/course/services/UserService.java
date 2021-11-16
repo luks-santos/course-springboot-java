@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.punkmetal.course.entities.User;
 import com.punkmetal.course.repositories.UserRepository;
+import com.punkmetal.course.services.exceptions.ResourceNotFoundException;
 
 @Service
 public class UserService {
@@ -20,8 +21,8 @@ public class UserService {
 	}
 	
 	public User findByid(Long id) {
-		Optional<User> op =  repository.findById(id);
-		return op.get();
+		Optional<User> obj =  repository.findById(id);
+		return obj.orElseThrow(() -> new ResourceNotFoundException(id));
 	}
 	
 	public User insert(User obj) {
@@ -32,11 +33,9 @@ public class UserService {
 		repository.deleteById(id);
 	}
 	
-
 	public User update(Long id, User obj) {
 		User entity = repository.getOne(id);
 		updateData(entity, obj);
-		entity = obj;
 		return repository.save(entity);
 	}
 
